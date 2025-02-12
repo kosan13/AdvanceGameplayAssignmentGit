@@ -10,16 +10,16 @@ namespace Game
 {
     public partial class BlobDivisionMaze
     {
-        private const float RandomTolerance = 0.1f;
         [SerializeField] private int maxRoomSize = 5;
-        private void StartFloodFill()
+        private const float RandomTolerance = 0.1f;
+        private void GenerateBlobDivisionMaze()
         {
             ResetRegionID(); // Reset region ID 
             
-            (HashSet<Tile>, HashSet<Tile>) subregion = FloodFill(ResetTilesAndGetSeedTile(_tileMap));
+            (HashSet<Tile>, HashSet<Tile>) subregion = BlobDivisionMazeFloodFill(ResetTilesAndGetSeedTile(_tileMap));
             
             RecursiveFloodFillData recursiveFloodFillData = new (subregion, maxRoomSize);
-            RecursiveFloodFill(recursiveFloodFillData);
+            RecursiveBlobDivisionMazeFloodFill(recursiveFloodFillData);
             
             _combineInstances.AddRange(CreatWall(_tileMap));
             
@@ -66,7 +66,7 @@ namespace Game
                 }
             }
         }
-        private static (HashSet<Tile>, HashSet<Tile>) FloodFill((Tile, Tile) start)
+        private static (HashSet<Tile>, HashSet<Tile>) BlobDivisionMazeFloodFill((Tile, Tile) start)
         {
             // setup
             (Queue<Tile>, Queue<Tile>) open = (new Queue<Tile>(), new Queue<Tile>());
@@ -95,7 +95,7 @@ namespace Game
             }
             return closed;
         }
-        private void RecursiveFloodFill(RecursiveFloodFillData recursiveFloodFillData)
+        private void RecursiveBlobDivisionMazeFloodFill(RecursiveFloodFillData recursiveFloodFillData)
         {
             (RecursiveFloodFillData, RecursiveFloodFillData) newRecursiveFloodFillData = new (new RecursiveFloodFillData(), new RecursiveFloodFillData());
             
@@ -108,20 +108,20 @@ namespace Game
                 SetRegionIDOnTiles(recursiveItems);
             }
             
-            newRecursiveFloodFillData.Item1 = NewRecursiveFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item1);
-            newRecursiveFloodFillData.Item2 = NewRecursiveFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item2);
+            newRecursiveFloodFillData.Item1 = NewRecursiveBlobDivisionMazeFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item1);
+            newRecursiveFloodFillData.Item2 = NewRecursiveBlobDivisionMazeFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item2);
             
-            if (recursiveItems.Item1 != null && recursiveItems.Item1.Count > minRoomSize) RecursiveFloodFill(newRecursiveFloodFillData.Item1);
-            if (recursiveItems.Item2 != null && recursiveItems.Item2.Count > minRoomSize) RecursiveFloodFill(newRecursiveFloodFillData.Item2);
+            if (recursiveItems.Item1 != null && recursiveItems.Item1.Count > minRoomSize) RecursiveBlobDivisionMazeFloodFill(newRecursiveFloodFillData.Item1);
+            if (recursiveItems.Item2 != null && recursiveItems.Item2.Count > minRoomSize) RecursiveBlobDivisionMazeFloodFill(newRecursiveFloodFillData.Item2);
         }
-        private static RecursiveFloodFillData NewRecursiveFloodFillData(TileMapClass tileMap, RecursiveFloodFillData data, HashSet<Tile> recursiveItems)
+        private static RecursiveFloodFillData NewRecursiveBlobDivisionMazeFloodFillData(TileMapClass tileMap, RecursiveFloodFillData data, HashSet<Tile> recursiveItems)
         {
             RecursiveFloodFillData newRecursiveFloodFillData = new ((null, null), data.MinRoomSize);
             
             if (recursiveItems == null) return newRecursiveFloodFillData;
             if (recursiveItems.Count <= data.MinRoomSize) return newRecursiveFloodFillData;
             
-            (HashSet<Tile>, HashSet<Tile>) newRecursiveItems = FloodFill(ResetTilesAndGetSeedTile(recursiveItems, tileMap));
+            (HashSet<Tile>, HashSet<Tile>) newRecursiveItems = BlobDivisionMazeFloodFill(ResetTilesAndGetSeedTile(recursiveItems, tileMap));
             
             newRecursiveFloodFillData = new RecursiveFloodFillData(newRecursiveItems, data.MinRoomSize);
             return newRecursiveFloodFillData;

@@ -40,12 +40,8 @@ namespace Game
         }
         #endregion
         
-        public float Heuristic(INode start, INode goal)
-        {
-            if (start is not Tile tileA || goal is not Tile tileB) return 1.0f;
-            return Vector3.Distance(tileA.GetWorldPosition, tileB.GetWorldPosition);
-        }
-
+        public float Heuristic(INode start, INode goal) => throw new System.NotImplementedException();
+        
         protected void Start()
         {
             InitializedWorld();
@@ -74,12 +70,8 @@ namespace Game
             }
             // Create links
             CreateLinks(_tileMap);
-            
              _combineInstances.Add(GenerateBlobDivisionMazeMesh());
         }
-
-        private void GenerateBlobDivisionMaze() => StartFloodFill();
-        
         private CombineInstance GenerateBlobDivisionMazeMesh()
         {
             if (_tileMap.IsEmpty) { Debug.LogError("TileMap Length is 0 or empty"); return new CombineInstance(); }
