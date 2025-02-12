@@ -284,11 +284,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 682902439}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90f0b174971243cfa0c366ca3b7fdc91, type: 3}
+  m_Script: {fileID: 11500000, guid: 0cda1c8683ba442fabc1566f3a791f06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   maxRoomSize: 5
-  tileMapSize: {x: 5, y: 5}
+  tileMapSize: {x: 10, y: 10}
   wallHeight: 2
   camera: {fileID: 519420032}
   visualizer: {fileID: 1583996798439005253, guid: 257af783d49b12042b044db8f674f00f, type: 3}
