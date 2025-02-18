@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using Graphs;
 using MeshHandlers;
+using TileSystem;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static TileSystem.TileSystemFunctions;
+using static TileSystem.TileSystemStructs;
 
 namespace Game
 {
@@ -21,6 +23,8 @@ namespace Game
         [SerializeField] public Texture2D floorTexture;
         
         private TileMapClass _tileMap;
+        private CombineInstance _floor;
+        private List<Wall> _wallList = new ();
         private List<CombineInstance> _combineInstances = new ();
         
         #region Properties
@@ -48,6 +52,8 @@ namespace Game
         {
             InitializedWorld();
             GenerateBlobDivisionMaze();
+            _combineInstances.Add(_floor);
+            foreach (Wall wall in _wallList) _combineInstances.Add(new CombineInstance { mesh = wall.Mesh});
             MeshFilter.mesh = CreateMesh(_combineInstances);
             AddMaterialToMeshes();
         }
@@ -56,12 +62,12 @@ namespace Game
         {
             _tileMap = new TileMapClass(tileMapSize, wallHeight);
             
-            //Temp Camera Code
+            // Temp Camera Code
             camera.GetComponent<Camera>().orthographicSize = _tileMap.GetSizeX / 2f + 1;
             camera.position = new Vector3(_tileMap.GetSizeX / 2f, 10, _tileMap.GetSizeY / 2f);
             //
             
-            //Create Tiles
+            // Create Tiles
             for (int x = 0; x < _tileMap.GetSizeX; x++)
             {
                 for (int y = 0; y < _tileMap.GetSizeY; y++)
@@ -72,8 +78,8 @@ namespace Game
             }
             // Create links
             CreateLinks(_tileMap);
-            CombineInstance combineInstance = GenerateBlobDivisionMazeMesh();
-             _combineInstances.Add(combineInstance);
+            // Create Ground Mesh
+            _floor = GenerateBlobDivisionMazeMesh();
         }
         private void AddMaterialToMeshes()
         {

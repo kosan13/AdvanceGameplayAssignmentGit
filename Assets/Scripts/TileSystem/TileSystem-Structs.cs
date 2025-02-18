@@ -32,5 +32,17 @@ namespace TileSystem
                 MinRoomSize = minRoomSize;
             }
         }
+
+        public struct Wall
+        {
+            public Mesh Mesh;
+            public (Tile, Tile) WallsOwners;
+
+            public Wall(Mesh mesh, (Tile, Tile) wallsOwners)
+            {
+                Mesh = mesh;
+                WallsOwners = wallsOwners;
+            }
+        }
     }
 }

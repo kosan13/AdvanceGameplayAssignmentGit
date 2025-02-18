@@ -144,9 +144,9 @@ namespace TileSystem
             IncrementRegionIDByOne();
         }
         
-        public static List<CombineInstance> CreatWall(TileMapClass tileMap)
+        public static List<Wall> CreatWalls(TileMapClass tileMap)
         {
-            List<CombineInstance> combineInstances = new();
+            List<Wall> walls = new();
             for (int x = 0; x < tileMap.GetSizeX; x++)
             {
                 for (int y = 0; y < tileMap.GetSizeY; y++)
@@ -178,23 +178,23 @@ namespace TileSystem
                             case LinkDirection.Null: Debug.LogError("LinkDirection Is Null"); break;
                             case LinkDirection.DirectionUp: Debug.LogError("LinkDirection Is DirectionUp"); break;
                             case LinkDirection.DirectionDown: Debug.LogError("LinkDirection Is DirectionDown"); break;
-                            case LinkDirection.DirectionForward: Wall(tempVector3, Vector3.forward, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionBack: Wall(tempVector3, Vector3.back, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionLeft: Wall(tempVector3, Vector3.left, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionRight: Wall(tempVector3, Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case LinkDirection.DirectionForward: CreatWall(tempVector3, Vector3.forward, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case LinkDirection.DirectionBack: CreatWall(tempVector3, Vector3.back, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case LinkDirection.DirectionLeft: CreatWall(tempVector3, Vector3.left, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case LinkDirection.DirectionRight: CreatWall(tempVector3, Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles); break;
                             default: Debug.LogError("LinkDirection Is Null"); break;
                         }
                         Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
                         mesh.RecalculateBounds();
                         mesh.RecalculateNormals();
-                        combineInstances.Add(new CombineInstance {mesh = mesh});
+                        walls.Add(new Wall(mesh, ((Tile)link.Source, (Tile)link.Target)));
                     }
                     foreach (Link link in linkList) tile.RemoveLink(link);
                 }
             }
-            return combineInstances;
+            return walls;
         }
-        public static void Wall(Vector3 vPosition, Vector3 vDirection, float wallHeight, Color color, List<Vector3> vertices, List<Vector2> uv, List<Color> colors, List<int> triangles)
+        public static void CreatWall(Vector3 vPosition, Vector3 vDirection, float wallHeight, Color color, List<Vector3> vertices, List<Vector2> uv, List<Color> colors, List<int> triangles)
         {
             CreatQuad(vPosition, vDirection, wallHeight, color, vertices, uv, colors, triangles);
             CreatQuad(vPosition, -vDirection, wallHeight, color, vertices, uv, colors, triangles);
@@ -235,13 +235,6 @@ namespace TileSystem
                 iStart + 0, iStart + 1, iStart + 2,
                 iStart + 0, iStart + 2, iStart + 3,
             });
-        }
-
-
-        public static bool MeshCompare(Mesh meshOne, Mesh meshTwo)
-        {
-            foreach (Vector3 vertexOne in meshOne.vertices) if (meshTwo.vertices.Any(vertexTwo => vertexOne != vertexTwo)) return false;
-            return true;
         }
     }
 }

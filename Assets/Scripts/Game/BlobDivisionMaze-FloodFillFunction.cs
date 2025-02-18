@@ -23,8 +23,8 @@ namespace Game
             RecursiveFloodFillData recursiveFloodFillData = new (subregion, maxRoomSize);
             RecursiveBlobDivisionMazeFloodFill(recursiveFloodFillData);
 
-            List<CombineInstance> combineInstances = CreatWall(_tileMap);
-            _combineInstances.AddRange(combineInstances);
+            List<Wall> walls = CreatWalls(_tileMap);
+            _wallList.AddRange(walls);
 
             HashSet<(Tile, Tile)>[] gWalls = new HashSet<(Tile, Tile)>[GetRegionID()];
             for (int index = 0; index < gWalls.Length; index++) gWalls[index] = new HashSet<(Tile, Tile)>();
