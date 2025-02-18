@@ -293,6 +293,9 @@ MonoBehaviour:
   camera: {fileID: 519420032}
   visualizer: {fileID: 1583996798439005253, guid: 257af783d49b12042b044db8f674f00f, type: 3}
   material: {fileID: 2100000, guid: dcd4dde2f23cf6b4c9d6a5adac25f2b0, type: 2}
+  floorShader: {fileID: 4800000, guid: 9dac8b4507fcedc4093f6418958f57a6, type: 3}
+  wallShader: {fileID: 4800000, guid: 9f4e268993a95004f887551322a30836, type: 3}
+  floorTexture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
 --- !u!4 &682902441
 Transform:
   m_ObjectHideFlags: 0

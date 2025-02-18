@@ -1,10 +1,12 @@
+using System.Collections.Generic;
+using TileSystem.Tile_Class;
 using UnityEngine;
 
 namespace TileSystem.TileMap_Class
 {
     public sealed partial class TileMapClass
     {
-        private Tile_Class.Tile[,] TileMap  { get; }
+        private Tile[,] TileMap  { get; }
         private Vector2Int Size  { get; }
         private float WallHeight { get; }
     }

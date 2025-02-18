@@ -8,9 +8,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
+using static TileSystem.TileSystemStructs;
+
 namespace TileSystem
 {
-    public class TileSystemFunctions
+    public static class TileSystemFunctions
     {
         private static readonly int NewColor = Shader.PropertyToID("_Color");
         private static int _regionID;
@@ -19,7 +21,6 @@ namespace TileSystem
         public static int SetRegionID(int regionID) => _regionID = regionID;
         public static int ResetRegionID() => SetRegionID(0);
         public static int IncrementRegionIDByOne() => SetRegionID(GetRegionID() + 1);
-        
         
         public static void CreateLinks(TileMapClass tileMap)
         {
@@ -55,7 +56,7 @@ namespace TileSystem
 
             return (isValidScan, neighbor);
         }
-        public static void SearchNeighbors(TileSystemStructs.NeighborsSearchData searchData, float randomTolerance = 0.0f)
+        public static void SearchNeighbors(NeighborsSearchData searchData, float randomTolerance = 0.0f)
         {
             bool guarantee = false;
             Tile node = searchData.Open.Dequeue();
@@ -145,7 +146,6 @@ namespace TileSystem
         
         public static List<CombineInstance> CreatWall(TileMapClass tileMap)
         {
-
             List<CombineInstance> combineInstances = new();
             for (int x = 0; x < tileMap.GetSizeX; x++)
             {
@@ -163,7 +163,7 @@ namespace TileSystem
                         
                         if (iLink.Source is Tile temp1 && iLink.Target is Tile temp2 && (temp1.GetIndexPositionsX != temp2.GetIndexPositionsX && temp1.GetIndexPositionsY != temp2.GetIndexPositionsY)) continue;
 
-                        if (!linkHashSet.Add(link));
+                        linkHashSet.Add(link);
                     }
                     foreach (Link link in linkHashSet)
                     {
@@ -184,7 +184,6 @@ namespace TileSystem
                             case LinkDirection.DirectionRight: Wall(tempVector3, Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles); break;
                             default: Debug.LogError("LinkDirection Is Null"); break;
                         }
-                        
                         Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
                         mesh.RecalculateBounds();
                         mesh.RecalculateNormals();
@@ -214,10 +213,10 @@ namespace TileSystem
             vPosition += Vector3.up;
             vertices.AddRange(new Vector3[]
             {
-                vPosition - vRight * 0.5f - Vector3.up * 0.5f,
+                vPosition - vRight * 0.5f - Vector3.up,
                 vPosition - vRight * 0.5f + Vector3.up * wallHeight,
                 vPosition + vRight * 0.5f + Vector3.up * wallHeight,
-                vPosition + vRight * 0.5f - Vector3.up * 0.5f
+                vPosition + vRight * 0.5f - Vector3.up
             });
 
             // calculate uvs (planar mapping)
@@ -236,6 +235,13 @@ namespace TileSystem
                 iStart + 0, iStart + 1, iStart + 2,
                 iStart + 0, iStart + 2, iStart + 3,
             });
+        }
+
+
+        public static bool MeshCompare(Mesh meshOne, Mesh meshTwo)
+        {
+            foreach (Vector3 vertexOne in meshOne.vertices) if (meshTwo.vertices.Any(vertexTwo => vertexOne != vertexTwo)) return false;
+            return true;
         }
     }
 }

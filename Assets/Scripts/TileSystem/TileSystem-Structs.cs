@@ -1,17 +1,19 @@
 using System.Collections.Generic;
+using TileSystem.Tile_Class;
+using UnityEngine;
 
 namespace TileSystem
 {
-    public class TileSystemStructs
+    public static class TileSystemStructs
     {
         public struct NeighborsSearchData
         {
-            public readonly Queue<Tile_Class.Tile> Open;
-            public readonly HashSet<Tile_Class.Tile> Closed;
-            public (Queue<Tile_Class.Tile>, Queue<Tile_Class.Tile>) OpenQueue;
-            public (HashSet<Tile_Class.Tile>, HashSet<Tile_Class.Tile>) ClosedHashSet;
+            public readonly Queue<Tile> Open;
+            public readonly HashSet<Tile> Closed;
+            public (Queue<Tile>, Queue<Tile>) OpenQueue;
+            public (HashSet<Tile>, HashSet<Tile>) ClosedHashSet;
 
-            public NeighborsSearchData(Queue<Tile_Class.Tile> open, HashSet<Tile_Class.Tile> closed, (Queue<Tile_Class.Tile>, Queue<Tile_Class.Tile>) openQueue, (HashSet<Tile_Class.Tile>, HashSet<Tile_Class.Tile>) closedHashSet)
+            public NeighborsSearchData(Queue<Tile> open, HashSet<Tile> closed, (Queue<Tile>, Queue<Tile>) openQueue, (HashSet<Tile>, HashSet<Tile>) closedHashSet)
             {
                 Open = open;
                 Closed = closed;
@@ -21,10 +23,10 @@ namespace TileSystem
         }
         public struct RecursiveFloodFillData
         {
-            public (HashSet<Tile_Class.Tile>, HashSet<Tile_Class.Tile>) RecursiveItems { get; }
+            public (HashSet<Tile>, HashSet<Tile>) RecursiveItems { get; }
             public int MinRoomSize { get; }
 
-            public RecursiveFloodFillData((HashSet<Tile_Class.Tile>, HashSet<Tile_Class.Tile>) recursiveItems, int minRoomSize = 5)
+            public RecursiveFloodFillData((HashSet<Tile>, HashSet<Tile>) recursiveItems, int minRoomSize = 5)
             {
                 RecursiveItems = recursiveItems;
                 MinRoomSize = minRoomSize;

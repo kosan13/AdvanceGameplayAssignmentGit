@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
+using Graphs;
+using TileSystem;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
-using Unity.VisualScripting;
 using UnityEngine;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
@@ -20,12 +22,13 @@ namespace Game
             
             RecursiveFloodFillData recursiveFloodFillData = new (subregion, maxRoomSize);
             RecursiveBlobDivisionMazeFloodFill(recursiveFloodFillData);
-            
-            _combineInstances.AddRange(CreatWall(_tileMap));
-            
+
+            List<CombineInstance> combineInstances = CreatWall(_tileMap);
+            _combineInstances.AddRange(combineInstances);
 
             HashSet<(Tile, Tile)>[] gWalls = new HashSet<(Tile, Tile)>[GetRegionID()];
             for (int index = 0; index < gWalls.Length; index++) gWalls[index] = new HashSet<(Tile, Tile)>();
+            List<(Tile, Tile)> occupiedWalls = new ();
             
             foreach (Tile tile in _tileMap.GetAllTiles())
             {
@@ -39,11 +42,9 @@ namespace Game
                     }
                 }
             }
-
-            List<(Tile, Tile)> occupiedWalls = new ();
-            
             foreach (HashSet<(Tile, Tile)> wall in gWalls)
             {
+                if (wall.Count <= 0) continue;
                 List<(Tile, Tile)> listToRemove = new ();
                 foreach ((Tile, Tile) tiles in wall)
                 {
@@ -53,19 +54,21 @@ namespace Game
                 }
                 foreach ((Tile, Tile) tiles in listToRemove) wall.Remove(tiles);
             }
-            
-            foreach (HashSet<(Tile, Tile)> wallList in gWalls)
-            {
-                foreach ((Tile, Tile) wall in wallList)
-                { 
-                    Vector3 position = Vector3.Lerp(wall.Item1.GetWorldPosition, wall.Item2.GetWorldPosition, 0.5f);
-                    Transform temp = Instantiate(wall.Item1.GetVisual);
-                    position.y += 8.2f;
-                    temp.localScale = Vector3.one * 0.25f; 
-                    temp.position = position;
-                }
-            }
+            Debug.Log(_combineInstances.Count);
+
+            // foreach (HashSet<(Tile, Tile)> wallList in gWalls)
+            // {
+            //     foreach ((Tile, Tile) wall in wallList)
+            //     { 
+            //         Vector3 position = Vector3.Lerp(wall.Item1.GetWorldPosition, wall.Item2.GetWorldPosition, 0.5f);
+            //         Transform temp = Instantiate(wall.Item1.GetVisual);
+            //         position.y += 8.2f;
+            //         temp.localScale = Vector3.one * 0.25f; 
+            //         temp.position = position;
+            //     }
+            // }
         }
+
         private static (HashSet<Tile>, HashSet<Tile>) BlobDivisionMazeFloodFill((Tile, Tile) start)
         {
             // setup
@@ -104,7 +107,7 @@ namespace Game
 
             if (recursiveItems is { Item1: not null, Item2: not null })
             {
-                SetCoolerToVisualiseRegion(recursiveItems,Instantiate(material));
+                //SetCoolerToVisualiseRegion(recursiveItems,Instantiate(material));
                 SetRegionIDOnTiles(recursiveItems);
             }
             

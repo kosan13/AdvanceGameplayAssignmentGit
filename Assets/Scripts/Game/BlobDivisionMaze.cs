@@ -16,7 +16,9 @@ namespace Game
         [SerializeField] private new Transform camera;
         
         [SerializeField] private Transform visualizer;
-        [SerializeField] public Material material;
+        [SerializeField] public Shader floorShader;
+        [SerializeField] public Shader wallShader;
+        [SerializeField] public Texture2D floorTexture;
         
         private TileMapClass _tileMap;
         private List<CombineInstance> _combineInstances = new ();
@@ -47,7 +49,7 @@ namespace Game
             InitializedWorld();
             GenerateBlobDivisionMaze();
             MeshFilter.mesh = CreateMesh(_combineInstances);
-            MeshRenderer.material = material;
+            AddMaterialToMeshes();
         }
 
         private void InitializedWorld()
@@ -64,13 +66,30 @@ namespace Game
             {
                 for (int y = 0; y < _tileMap.GetSizeY; y++)
                 {
-                    //_tileMap.SetTile(x, y, new Tile(x, y));
-                    _tileMap.SetTile(x, y, new Tile(x, y, Instantiate(visualizer)));
+                    _tileMap.SetTile(x, y, new Tile(x, y));
+                    //_tileMap.SetTile(x, y, new Tile(x, y, Instantiate(visualizer)));
                 }
             }
             // Create links
             CreateLinks(_tileMap);
-             _combineInstances.Add(GenerateBlobDivisionMazeMesh());
+            CombineInstance combineInstance = GenerateBlobDivisionMazeMesh();
+             _combineInstances.Add(combineInstance);
+        }
+        private void AddMaterialToMeshes()
+        {
+            Material[] subMeshMaterials = new Material[MeshFilter.mesh.subMeshCount];
+            Material floorMaterial = new (floorShader)
+            {
+                mainTexture = floorTexture,
+                mainTextureScale = Vector2.one / 2,
+                mainTextureOffset = Vector2.one / 4
+            };
+            subMeshMaterials[0] = floorMaterial;
+            
+            Material wallMaterial = new (wallShader);
+            for (int i = 1; i < subMeshMaterials.Length; i++) subMeshMaterials[i] = wallMaterial;
+            
+            MeshRenderer.materials = subMeshMaterials;
         }
         private CombineInstance GenerateBlobDivisionMazeMesh()
         {
@@ -78,6 +97,7 @@ namespace Game
             
             // generate a mesh
             List<Vector3> vertices = new();
+            List<Vector2> uv = new();
             List<Color> colors = new();
             List<int> triangles = new();
             
@@ -92,7 +112,13 @@ namespace Game
                     triangles.AddRange(new[] { iStart + 0, iStart + 1, iStart + 2, iStart + 0, iStart + 2, iStart + 3 });
                 }
             }
-            Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
+            // calculate uvs (planar mapping)
+            for (int i = 0; i < vertices.Count; ++i)
+            {
+                Vector3 v = vertices[i];
+                uv.Add(new Vector2(Vector3.Dot(Vector3.forward, v), Vector3.Dot(Vector3.right, v)));
+            }
+            Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
             CombineInstance combineInstance = new () { mesh = mesh };
@@ -104,7 +130,7 @@ namespace Game
             mesh.CombineMeshes(combineInstances.ToArray(), false, false);
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
-            mesh.Optimize(); 
+            mesh.Optimize();
             return mesh;
         }
     }
