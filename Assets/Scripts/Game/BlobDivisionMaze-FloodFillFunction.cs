@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using Graphs;
-using TileSystem;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;
+using UnityEngine.Rendering;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
     public partial class BlobDivisionMaze
     {
-        [SerializeField] private int maxRoomSize = 5;
+        [SerializeField, Range(1,500)] private int maxRoomSize = 5;
+        [SerializeField, Range(1, 10)] private int doorCountPerRoom = 2;
         private const float RandomTolerance = 0.1f;
         private void GenerateBlobDivisionMaze()
         {
@@ -54,19 +56,14 @@ namespace Game
                 }
                 foreach ((Tile, Tile) tiles in listToRemove) wall.Remove(tiles);
             }
-            Debug.Log(_combineInstances.Count);
 
-            // foreach (HashSet<(Tile, Tile)> wallList in gWalls)
-            // {
-            //     foreach ((Tile, Tile) wall in wallList)
-            //     { 
-            //         Vector3 position = Vector3.Lerp(wall.Item1.GetWorldPosition, wall.Item2.GetWorldPosition, 0.5f);
-            //         Transform temp = Instantiate(wall.Item1.GetVisual);
-            //         position.y += 8.2f;
-            //         temp.localScale = Vector3.one * 0.25f; 
-            //         temp.position = position;
-            //     }
-            // }
+            for (int i = 0; i < doorCountPerRoom; i++)
+            {
+                gWalls = RemoveEmptyWallGroups(gWalls);
+                AddDoors(gWalls);
+            }
+
+            CreatOuterWalls();
         }
 
         private static (HashSet<Tile>, HashSet<Tile>) BlobDivisionMazeFloodFill((Tile, Tile) start)
@@ -128,6 +125,63 @@ namespace Game
             
             newRecursiveFloodFillData = new RecursiveFloodFillData(newRecursiveItems, data.MinRoomSize);
             return newRecursiveFloodFillData;
+        }
+        
+        private void CreatOuterWalls()
+        {
+            foreach (Tile tile in _tileMap.GetTileMap)
+            {
+                List<Vector3> vertices = new();
+                List<Vector2> uv = new();
+                List<Color> colors = new();
+                List<int> triangles = new();
+                Vector3 position = tile.GetWorldPosition;
+                
+                if (tile.GetIndexPositionsX == 0) CreatWall(new Vector3(position.x - .5f, position.y, position.z), Vector3.back, wallHeight, Color.black, vertices, uv, colors, triangles);
+                if (tile.GetIndexPositionsX == tileMapSize.x - 1) CreatWall(new Vector3(position.x + .5f, position.y, position.z), Vector3.forward, wallHeight, Color.black, vertices, uv, colors, triangles);
+                if (tile.GetIndexPositionsY == 0) CreatWall(new Vector3(position.x, position.y, position.z - .5f), Vector3.left, wallHeight, Color.black, vertices, uv, colors, triangles);
+                if (tile.GetIndexPositionsY == tileMapSize.y - 1) CreatWall(new Vector3(position.x, position.y, position.z + .5f), Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles);
+                
+                Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+                _wallList.Add(new Wall(mesh, (tile, null)));
+            }
+        }
+        private void AddDoors(HashSet<(Tile, Tile)>[] gWalls)
+        {
+            foreach (HashSet<(Tile, Tile)> wallGrope in gWalls)
+            {
+                int randomIndex = Random.Range(0, wallGrope.Count - 1);
+                (Tile, Tile) tiles = wallGrope.ElementAt(randomIndex);
+
+                foreach (Wall wall in _wallList.ToArray())
+                {
+                    if (wall.WallsOwners != tiles && wall.WallsOwners != (tiles.Item2, tiles.Item1)) continue;
+                    (Tile, Tile) wallsOwners = wall.WallsOwners;
+                    _wallList.Remove(wall);
+                    wallsOwners.Item1.AddLink(new Link(wallsOwners.Item1, wallsOwners.Item2));
+                    wallsOwners.Item2.AddLink(new Link(wallsOwners.Item2, wallsOwners.Item1));
+                    wallGrope.Remove(tiles);
+                }
+            }
+        }
+        private static HashSet<(Tile, Tile)>[] RemoveEmptyWallGroups(HashSet<(Tile, Tile)>[] walls)
+        {
+            int newLength = walls.Count(wall => wall.Count > 0);
+            HashSet<(Tile, Tile)>[] newWalls = new HashSet<(Tile, Tile)>[newLength];
+            (int i, int j) = (0, 0);
+            while (i < walls.Length)
+            {
+                if (walls[i].Count > 0)
+                {
+                    newWalls[j] = walls[i]; 
+                    j++;
+                } 
+                i++;
+            }
+            walls = newWalls;
+            return walls;
         }
     }
 }

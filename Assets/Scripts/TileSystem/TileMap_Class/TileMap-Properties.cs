@@ -1,3 +1,4 @@
+using TileSystem.Tile_Class;
 using UnityEngine;
 
 namespace TileSystem.TileMap_Class
@@ -5,7 +6,7 @@ namespace TileSystem.TileMap_Class
     public sealed partial class TileMapClass
     {
         #region Properties
-        public Tile_Class.Tile[,] GetTileMap => TileMap;
+        public Tile[,] GetTileMap => TileMap;
 
         public Vector2Int GetSize => Size;
         public int GetSizeX => Size.x;

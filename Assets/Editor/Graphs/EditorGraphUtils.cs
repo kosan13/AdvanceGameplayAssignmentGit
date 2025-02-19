@@ -1,7 +1,8 @@
-using UnityEngine;
+using Graphs;
 using UnityEditor;
+using UnityEngine;
 
-namespace Graphs
+namespace Editor.Graphs
 {
     public static class EditorGraphUtils 
     {

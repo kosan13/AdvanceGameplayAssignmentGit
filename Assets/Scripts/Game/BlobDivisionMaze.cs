@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Linq;
 using Graphs;
 using MeshHandlers;
-using TileSystem;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
+using static Graphs.GraphAlgorithms;
 
 namespace Game
 {
@@ -17,10 +18,9 @@ namespace Game
         [SerializeField] private float wallHeight = 10.0f;
         [SerializeField] private new Transform camera;
         
-        [SerializeField] private Transform visualizer;
-        [SerializeField] public Shader floorShader;
-        [SerializeField] public Shader wallShader;
-        [SerializeField] public Texture2D floorTexture;
+        [SerializeField] private Shader floorShader;
+        [SerializeField] private Shader wallShader;
+        [SerializeField] private Texture2D floorTexture;
         
         private TileMapClass _tileMap;
         private CombineInstance _floor;
@@ -54,9 +54,14 @@ namespace Game
             GenerateBlobDivisionMaze();
             _combineInstances.Add(_floor);
             foreach (Wall wall in _wallList) _combineInstances.Add(new CombineInstance { mesh = wall.Mesh});
+            Debug.Log(_combineInstances.Count);
             MeshFilter.mesh = CreateMesh(_combineInstances);
             AddMaterialToMeshes();
+            
+            HashSet<Tile> longestFloodFill = LongestFloodFill();
+            Debug.Log(longestFloodFill);
         }
+
 
         private void InitializedWorld()
         {
@@ -138,6 +143,19 @@ namespace Game
             mesh.RecalculateNormals();
             mesh.Optimize();
             return mesh;
+        }
+        private HashSet<Tile> LongestFloodFill()
+        {
+            HashSet<Tile> longestFloodFill = new();
+            List<HashSet<Tile>> floodFillRegion = new();
+            foreach (HashSet<Tile> tileRegion in _tileMap.AllRegion(GetRegionID()))
+            {
+                bool contains = floodFillRegion.Any(region => region.Contains(tileRegion.ElementAt(0)));
+                if (contains) continue;
+                floodFillRegion.Add(FloodFill(tileRegion.ElementAt(0)));
+            }
+            foreach (HashSet<Tile> region in floodFillRegion.Where(region => longestFloodFill.Count <= region.Count)) longestFloodFill = region;
+            return longestFloodFill;
         }
     }
 }

@@ -1,7 +1,9 @@
+using Game;
 using UnityEditor;
+using static Editor.Graphs.EditorGraphUtils;
 
-namespace Game
+namespace Editor.Game
 {
     [CustomEditor(typeof(BlobDivisionMaze))]
-    public class BlobDivisionMazeEditor : Editor { private void OnSceneGUI() { Graphs.EditorGraphUtils.DrawGraph(target as BlobDivisionMaze); } }
+    public class BlobDivisionMazeEditor : UnityEditor.Editor { private void OnSceneGUI() { DrawGraph(target as BlobDivisionMaze); } }
 }
