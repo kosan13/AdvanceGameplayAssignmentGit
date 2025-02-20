@@ -37,8 +37,7 @@ namespace Events
             // insert event
             EventStack.Insert(0, evt);
             // reset current event?
-            if (CurrentEvent != null && CurrentEvent != evt)
-                CurrentEvent = null;
+            if (CurrentEvent != null && CurrentEvent != evt) CurrentEvent = null;
         }
         public void RemoveEvent(IEvent evt)
         {
