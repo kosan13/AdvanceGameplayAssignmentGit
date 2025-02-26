@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Events
+namespace Event
 {
     public class EventHandler : MonoBehaviour
     {

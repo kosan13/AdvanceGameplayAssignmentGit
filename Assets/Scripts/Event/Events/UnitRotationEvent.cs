@@ -1,8 +1,9 @@
+using Event.BaseEventClass;
 using Game;
 using Game.UnitClasses;
 using UnityEngine;
 
-namespace Events
+namespace Event.Events
 {
     public class RotationEvent : GameEventBehaviour
     {
@@ -22,7 +23,7 @@ namespace Events
             float deltaY = Input.GetAxis("Mouse X") * CameraSensitivity;
             PlayerCharacter.Instance.transform.rotation *= Quaternion.Euler(0, deltaY, 0 );
 
-            _rotationX += Input.GetAxis("Mouse Y") * CameraSensitivity;
+            _rotationX -= Input.GetAxis("Mouse Y") * CameraSensitivity;
             _rotationX = Mathf.Clamp(_rotationX, CameraClampMin, CameraClampMax);
             _camera.transform.localEulerAngles = new Vector3(_rotationX, 0, 0);
         }

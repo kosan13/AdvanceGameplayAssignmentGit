@@ -1,4 +1,4 @@
-using Events;
+using Event;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,11 +21,9 @@ namespace Editor.Events
                 string name = "   #" + eventHandler.EventStack.IndexOf(evt) + ": " + evt;
                 if (evt is Object obj)
                 {
-                    if (GUILayout.Button(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label))
-                        Selection.activeObject = obj;
+                    if (GUILayout.Button(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label)) Selection.activeObject = obj;
                 }
-                else
-                    EditorGUILayout.LabelField(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label);
+                else EditorGUILayout.LabelField(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label);
             }
             GUILayout.EndVertical();
         }

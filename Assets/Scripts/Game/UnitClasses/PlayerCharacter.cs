@@ -1,6 +1,6 @@
-using Events;
+using Event.Events;
 using UnityEngine;
-using EventHandler = Events.EventHandler;
+using EventHandler = Event.EventHandler;
 
 namespace Game.UnitClasses
 {

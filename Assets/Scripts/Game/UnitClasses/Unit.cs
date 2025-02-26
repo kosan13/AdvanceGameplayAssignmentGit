@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Events;
-using Events.Action;
+using Event.BaseEventClass;
+using Event.Events;
 using ScriptableObject;
 using TileSystem.Tile_Class;
 using UnityEngine;
 using static Dies.DiesFunction;
+using EventHandler = Event.EventHandler;
 using Random = UnityEngine.Random;
 
 namespace Game.UnitClasses
@@ -13,6 +15,8 @@ namespace Game.UnitClasses
     public class Unit : GameEventMeshHandlerBehaviour
     {
         private Tile _occupiedTile;
+        private Vector3 _worldPosition;
+        private const float MoveSpeed = 10;
 
         #region Properties
 
@@ -20,8 +24,15 @@ namespace Game.UnitClasses
         public int CurrentMovement { get; protected set; }
         public int CurrentActionsPoints { get; protected set; }
         
-        public Vector3 WorldPosition { get; private set; }
-        protected int Initiative { get; private set; }
+        public Vector3 WorldPosition
+        {
+            get => _worldPosition;
+            private set
+            {
+                _worldPosition = value;
+            } 
+        }
+        public int Initiative { get; private set; }
         public Tile OccupiedTile
         {
             get => _occupiedTile;
@@ -46,6 +57,9 @@ namespace Game.UnitClasses
         protected int RollInitiative() => Initiative = RollADie(UnitScriptableObject.InitiativeDies);
         public Tile SetOccupiedTile(Tile tile) => OccupiedTile = tile;
 
+        public int RemoveMovement(int value) => CurrentMovement - value;
+        public int RemoveOneMovement() => RemoveMovement(1);
+
         #endregion
 
         private void OnEnable() => AllUnits.Add(this);
@@ -63,12 +77,20 @@ namespace Game.UnitClasses
         public override void OnBegin(bool bFirstTime)
         {
             base.OnBegin(bFirstTime);
-            CurrentHealth = UnitScriptableObject.MaxHealth;
             CurrentMovement = UnitScriptableObject.MaxMovement;
             CurrentActionsPoints = UnitScriptableObject.MaxActionsPoints;
         
             if (bFirstTime)
             {
+                CurrentHealth = UnitScriptableObject.MaxHealth;
+                // roll for initiative
+                RollInitiative();
+                // get tile
+                Tile tile = GetLevel.ElementAt(Random.Range(0, GetLevel.Count - 1));
+                while (tile.GetIsOccupied) tile = GetLevel.ElementAt(Random.Range(0, GetLevel.Count - 1));
+                OccupiedTile = tile;
+                
+                
                 // increase turn time
                 // TurnTime += m_fTurnDuration;
         
@@ -82,7 +104,8 @@ namespace Game.UnitClasses
                 }
             }
         }
-        
+        private void Update() => transform.position = Vector3.Lerp(transform.position, _worldPosition, Time.deltaTime * MoveSpeed);
+
         public void TakeDamage(int iDmg)
         {
             // m_iUnitCount -= iDmg;
@@ -95,94 +118,47 @@ namespace Game.UnitClasses
         public override bool IsDone() => CurrentActionsPoints == 0;
 
         public static bool IsEnemy(Unit unit) => unit.IsPlayer == false;
-    }
-}
 
-namespace Game
-{
-    // public class Dune_Unit : EventHandler.GameEventBehaviour
-    // {
-    //     public float ShootRange = 8;
-    //     public int VisionRange = 10;
-    //
-    //     public int Damage = 2;
-    //     
-    //     private float time = 0.5f;
-    //
-    //
-    //     public UnityEvent DamageTaken;
-    //     public UnityEvent actionpointDepleted;
-    //
-    //
-    //
-    //     public void TakeDamage(int damage)
-    //     {
-    //         UnitHealth -= damage;
-    //         DamageTaken.Invoke();
-    //         if (UnitHealth <= 0)
-    //         {
-    //             Destroy(gameObject);
-    //         }
-    //     }
-    //     public override void OnBegin(bool bFirstTime)
-    //     {
-    //         base.OnBegin(bFirstTime);
-    //         
-    //         time = 0.5f;
-    //
-    //         if (bFirstTime)
-    //         {
-    //             OverwatchNodes = null;
-    //         }
-    //
-    //         if (ActionsPoints > 0)
-    //         {
-    //             if (Team.IsPlayerTeam)
-    //             {
-    //                 EventHandler.Main.PushEvent(new PlayerInput(this));
-    //             }
-    //             else
-    //             {
-    //                 DoAIMove();
-    //             }
-    //         }
-    //        
-    //     }
-    //     private void DoAIMove()
-    //     {
-    //         if (EnemiesInRange.Count > 0)
-    //         {
-    //             target = GetClosestEnemy(EnemiesInRange);
-    //             EventHandler.Main.PushEvent(new ShootEvent(this,target));
-    //         }
-    //         else if (Enemies.Count > 0)
-    //         {
-    //             float BestDistance = float.MaxValue;
-    //             target = Enemies[Random.Range(0,Enemies.Count)];
-    //             
-    //             if (target != null) 
-    //             {
-    //               EventHandler.Main.PushEvent(new MoveEvent(this, target.node));
-    //             }
-    //
-    //         }
-    //     }
-    //     private Dune_Unit GetClosestEnemy(List<Dune_Unit> enemys)
-    //     {
-    //         Dune_Unit closestEnemy = enemys[0];
-    //         float closestdistance = float.MaxValue;
-    //
-    //         for (int i = 0; i < enemys.Count; i++)
-    //         {
-    //             float tempdistance = Vector3.Distance(transform.position, enemys[i].transform.position);
-    //             if (tempdistance < closestdistance)
-    //             {
-    //                 closestdistance = tempdistance;
-    //                 closestEnemy = enemys[i];
-    //             }
-    //         }
-    //
-    //         return closestEnemy;
-    //     }
-    // }
+        public static void Sort(List<Unit> units)
+        {
+            QuickSort(units, 0, units.Count);
+        }
+        
+        public static void QuickSort(IList<Unit> array, int start, int end)
+        {
+            while (true)
+            {
+                if (end <= start) return;
+                int pivot = Partition(array, start, end);
+                QuickSort(array, start, pivot - 1);
+                start = pivot + 1;
+            }
+        }
+        private static int Partition(IList<Unit> array, int start, int end)
+        {
+            int pivot = array[end].Initiative;
+            int i = start - 1;
+
+            (Unit valueTwo, Unit valueOnes) temp;
+
+            for (int j = start; j <= end; j++)
+            {
+                if (array[j].Initiative >= pivot) continue;
+                i++;
+                temp = VariableSwapping(array[i], array[j]);
+                array[i] = temp.valueTwo;
+                array[j] = temp.valueOnes;
+            }
+
+            i++;
+            temp = VariableSwapping(array[i], array[end]);
+            array[i] = temp.valueTwo;
+            array[end] = temp.valueOnes;
+            return i;
+        }
+        public static (TValue valueTwo, TValue valueOnes) VariableSwapping<TValue>(TValue valueOnes,TValue valueTwo)
+        {
+            return (valueTwo, valueOnes);
+        }
+    }
 }
