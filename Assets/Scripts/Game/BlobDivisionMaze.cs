@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.UnitClasses;
 using Graphs;
 using MeshHandlers;
 using TileSystem.Tile_Class;
@@ -16,11 +18,12 @@ namespace Game
     {
         [SerializeField] private Vector2Int tileMapSize = new(100, 100);
         [SerializeField] private float wallHeight = 10.0f;
-        [SerializeField] private new Transform camera;
         
         [SerializeField] private Shader floorShader;
         [SerializeField] private Shader wallShader;
         [SerializeField] private Texture2D floorTexture;
+
+        [SerializeField] private Transform playerCharacter;
         
         private TileMapClass _tileMap;
         private CombineInstance _floor;
@@ -44,10 +47,15 @@ namespace Game
                 }
             }
         }
+        public HashSet<Tile> Level { get; private set; }
+        public static BlobDivisionMaze Instance { get; private set; }
+        
         #endregion
         
-        public float Heuristic(INode start, INode goal) => throw new System.NotImplementedException();
+        public float Heuristic(INode start, INode goal) => throw new NotImplementedException();
         
+        private void OnEnable() => Instance = this;
+        private void OnDisable() => Instance = Instance == this ? null : Instance;
         protected void Start()
         {
             InitializedWorld();
@@ -58,20 +66,15 @@ namespace Game
             MeshFilter.mesh = CreateMesh(_combineInstances);
             AddMaterialToMeshes();
             
-            HashSet<Tile> longestFloodFill = LongestFloodFill();
-            Debug.Log(longestFloodFill);
+            Level = LongestFloodFill();
+            Debug.Log(Level);
+            GameObject player = Instantiate(playerCharacter.gameObject);
+            player.transform.position = Level.ElementAt(0).GetWorldPosition;
         }
-
 
         private void InitializedWorld()
         {
             _tileMap = new TileMapClass(tileMapSize, wallHeight);
-            
-            // Temp Camera Code
-            camera.GetComponent<Camera>().orthographicSize = _tileMap.GetSizeX / 2f + 1;
-            camera.position = new Vector3(_tileMap.GetSizeX / 2f, 10, _tileMap.GetSizeY / 2f);
-            //
-            
             // Create Tiles
             for (int x = 0; x < _tileMap.GetSizeX; x++)
             {
@@ -99,7 +102,6 @@ namespace Game
             
             Material wallMaterial = new (wallShader);
             for (int i = 1; i < subMeshMaterials.Length; i++) subMeshMaterials[i] = wallMaterial;
-            
             MeshRenderer.materials = subMeshMaterials;
         }
         private CombineInstance GenerateBlobDivisionMazeMesh()
@@ -129,11 +131,7 @@ namespace Game
                 Vector3 v = vertices[i];
                 uv.Add(new Vector2(Vector3.Dot(Vector3.forward, v), Vector3.Dot(Vector3.right, v)));
             }
-            Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            CombineInstance combineInstance = new () { mesh = mesh };
-            return combineInstance;
+            return new CombineInstance { mesh = NewMesh(vertices, uv, colors, triangles)};
         }
         private static Mesh CreateMesh(List<CombineInstance> combineInstances)
         {
