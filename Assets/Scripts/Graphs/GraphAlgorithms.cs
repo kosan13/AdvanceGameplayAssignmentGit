@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Graphs
 {
-    public class GraphAlgorithms
+    public static class GraphAlgorithms
     {
         public static HashSet<T> FloodFill<T>(T start) where T : class, INode
         {
@@ -26,7 +26,6 @@ namespace Graphs
             }
             return closed;
         }
-        
         public static HashSet<T> GetNodesInRange<T>(T start, int iRange) where T : class, INode
         {
             // setup

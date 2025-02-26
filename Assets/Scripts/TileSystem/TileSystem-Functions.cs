@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using Graphs;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
@@ -175,13 +176,13 @@ namespace TileSystem
                         float wallHeight = tileMap.GetWallHeight;
                         switch(link.Direction)
                         {
-                            case LinkDirection.Null: Debug.LogError("LinkDirection Is Null"); break;
-                            case LinkDirection.DirectionUp: Debug.LogError("LinkDirection Is DirectionUp"); break;
-                            case LinkDirection.DirectionDown: Debug.LogError("LinkDirection Is DirectionDown"); break;
-                            case LinkDirection.DirectionForward: CreatWall(tempVector3, Vector3.forward, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionBack: CreatWall(tempVector3, Vector3.back, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionLeft: CreatWall(tempVector3, Vector3.left, wallHeight, Color.black, vertices, uv, colors, triangles); break;
-                            case LinkDirection.DirectionRight: CreatWall(tempVector3, Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case Direction.Null: Debug.LogError("LinkDirection Is Null"); break;
+                            case Direction.DirectionUp: Debug.LogError("LinkDirection Is DirectionUp"); break;
+                            case Direction.DirectionDown: Debug.LogError("LinkDirection Is DirectionDown"); break;
+                            case Direction.DirectionForward: CreatWall(tempVector3, Vector3.forward, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case Direction.DirectionBack: CreatWall(tempVector3, Vector3.back, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case Direction.DirectionLeft: CreatWall(tempVector3, Vector3.left, wallHeight, Color.black, vertices, uv, colors, triangles); break;
+                            case Direction.DirectionRight: CreatWall(tempVector3, Vector3.right, wallHeight, Color.black, vertices, uv, colors, triangles); break;
                             default: Debug.LogError("LinkDirection Is Null"); break;
                         }
                         Mesh mesh = new () { indexFormat = IndexFormat.UInt32, vertices = vertices.ToArray(), uv = uv.ToArray(), colors = colors.ToArray(), triangles = triangles.ToArray() };
@@ -207,7 +208,6 @@ namespace TileSystem
             float radians = math.radians(angel);
             vRight.x = math.cos(radians);
             vRight.z = math.sin(radians);
-            
             // calculate vertices
             int iStart = vertices.Count;
             vPosition += Vector3.up;

@@ -1,6 +1,6 @@
-namespace Graphs
+namespace Enums
 {
-    public enum LinkDirection
+    public enum Direction
     {
         Null,
         DirectionUp,

@@ -25,6 +25,5 @@ namespace TileSystem.Tile_Class
         public IEnumerable<ILink> GetLinks => Links;
         
         #endregion
-
     }
 }

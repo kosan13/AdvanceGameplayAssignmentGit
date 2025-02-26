@@ -1,3 +1,5 @@
+using Enums;
+
 namespace Graphs
 {
     public class Link : ILink
@@ -5,11 +7,11 @@ namespace Graphs
         #region Properties
         public INode Source { get; }
         public INode Target { get; }
-        public LinkDirection Direction { get; private set; }
+        public Direction Direction { get; private set; }
 
         #endregion
 
-        public Link(INode source, INode target, LinkDirection direction)
+        public Link(INode source, INode target, Direction direction)
         {
             Source = source;
             Target = target;
@@ -21,14 +23,14 @@ namespace Graphs
             Target = target;
         }
 
-        public static LinkDirection GetLinkDirection(Link link , IPositionNode source, IPositionNode target) => link.Direction = GetLinkDirection(source, target);
-        public static LinkDirection GetLinkDirection(IPositionNode source, IPositionNode target)
+        public static Direction GetLinkDirection(Link link , IPositionNode source, IPositionNode target) => link.Direction = GetLinkDirection(source, target);
+        public static Direction GetLinkDirection(IPositionNode source, IPositionNode target)
         {
-            if (source.GetWorldPosition.x < target.GetWorldPosition.x) { return LinkDirection.DirectionForward; }
-            if (source.GetWorldPosition.x > target.GetWorldPosition.x) { return LinkDirection.DirectionBack; }
-            if (source.GetWorldPosition.z < target.GetWorldPosition.z) { return LinkDirection.DirectionRight; }
-            if (source.GetWorldPosition.z > target.GetWorldPosition.z) { return LinkDirection.DirectionLeft; }
-            return LinkDirection.Null;
+            if (source.GetWorldPosition.x < target.GetWorldPosition.x) { return Direction.DirectionForward; }
+            if (source.GetWorldPosition.x > target.GetWorldPosition.x) { return Direction.DirectionBack; }
+            if (source.GetWorldPosition.z < target.GetWorldPosition.z) { return Direction.DirectionRight; }
+            if (source.GetWorldPosition.z > target.GetWorldPosition.z) { return Direction.DirectionLeft; }
+            return Direction.Null;
         }
     }
 }
