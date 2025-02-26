@@ -4,13 +4,15 @@ using System.Linq;
 using Game.UnitClasses;
 using Graphs;
 using MeshHandlers;
-using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Tilemaps;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
 using static Graphs.GraphAlgorithms;
+using Random = UnityEngine.Random;
+using Tile = TileSystem.Tile_Class.Tile;
 
 namespace Game
 {
@@ -24,24 +26,25 @@ namespace Game
         [SerializeField] private Texture2D floorTexture;
 
         [SerializeField] private Transform playerCharacter;
-        
-        private TileMapClass _tileMap;
+
         private CombineInstance _floor;
         private List<Wall> _wallList = new ();
         private List<CombineInstance> _combineInstances = new ();
         
         #region Properties
+        public TileMapClass Tilemap { get; private set; }
+
         public IEnumerable<INode> GetNodes
         {
             get
             {
-                if (_tileMap != null)
+                if (Tilemap != null)
                 {
                     for (int x = 0; x < tileMapSize.x; x++)
                     {
                         for (int y = 0; y < tileMapSize.y; y++)
                         {
-                            yield return _tileMap.GetTile(x, y);
+                            yield return Tilemap.GetTile(x, y);
                         }
                     }
                 }
@@ -68,24 +71,19 @@ namespace Game
             
             Level = LongestFloodFill();
             Debug.Log(Level);
-            GameObject player = Instantiate(playerCharacter.gameObject);
-            player.transform.position = Level.ElementAt(0).GetWorldPosition;
+            int randomIndex = Random.Range(0, Level.Count - 1);
+            PlayerCharacter.CreatAndInstantiatePlayerCharacter().transform.position = Level.ElementAt(randomIndex).GetWorldPosition;
         }
 
         private void InitializedWorld()
         {
-            _tileMap = new TileMapClass(tileMapSize, wallHeight);
+            Tilemap = new TileMapClass(tileMapSize, wallHeight);
             // Create Tiles
-            for (int x = 0; x < _tileMap.GetSizeX; x++)
-            {
-                for (int y = 0; y < _tileMap.GetSizeY; y++)
-                {
-                    _tileMap.SetTile(x, y, new Tile(x, y));
-                    //_tileMap.SetTile(x, y, new Tile(x, y, Instantiate(visualizer)));
-                }
-            }
+            for (int x = 0; x < Tilemap.GetSizeX; x++)
+                for (int y = 0; y < Tilemap.GetSizeY; y++)
+                    Tilemap.SetTile(x, y, new Tile(x, y));
             // Create links
-            CreateLinks(_tileMap);
+            CreateLinks(Tilemap);
             // Create Ground Mesh
             _floor = GenerateBlobDivisionMazeMesh();
         }
@@ -106,17 +104,16 @@ namespace Game
         }
         private CombineInstance GenerateBlobDivisionMazeMesh()
         {
-            if (_tileMap.IsEmpty) { Debug.LogError("TileMap Length is 0 or empty"); return new CombineInstance(); }
+            if (Tilemap.IsEmpty) { Debug.LogError("TileMap Length is 0 or empty"); return new CombineInstance(); }
             
             // generate a mesh
             List<Vector3> vertices = new();
-            List<Vector2> uv = new();
             List<Color> colors = new();
             List<int> triangles = new();
             
-            for (int x = 0; x < _tileMap.GetSizeX; x++)
+            for (int x = 0; x < Tilemap.GetSizeX; x++)
             {
-                for (int y = 0; y < _tileMap.GetSizeY; y++)
+                for (int y = 0; y < Tilemap.GetSizeY; y++)
                 {
                     int iStart = vertices.Count;
                     vertices.AddRange(new Vector3[] { new(x - 0.5f, 0.0f, y - 0.5f), new(x - 0.5f, 0.0f, y + 0.5f), new(x + 0.5f, 0.0f, y + 0.5f), new(x + 0.5f, 0.0f, y - 0.5f) });
@@ -126,11 +123,7 @@ namespace Game
                 }
             }
             // calculate uvs (planar mapping)
-            for (int i = 0; i < vertices.Count; ++i)
-            {
-                Vector3 v = vertices[i];
-                uv.Add(new Vector2(Vector3.Dot(Vector3.forward, v), Vector3.Dot(Vector3.right, v)));
-            }
+            List<Vector2> uv = vertices.Select(v => new Vector2(Vector3.Dot(Vector3.forward, v), Vector3.Dot(Vector3.right, v))).ToList();
             return new CombineInstance { mesh = NewMesh(vertices, uv, colors, triangles)};
         }
         private static Mesh CreateMesh(List<CombineInstance> combineInstances)
@@ -146,7 +139,7 @@ namespace Game
         {
             HashSet<Tile> longestFloodFill = new();
             List<HashSet<Tile>> floodFillRegion = new();
-            foreach (HashSet<Tile> tileRegion in _tileMap.AllRegion(GetRegionID()))
+            foreach (HashSet<Tile> tileRegion in Tilemap.AllRegion(GetRegionID()))
             {
                 bool contains = floodFillRegion.Any(region => region.Contains(tileRegion.ElementAt(0)));
                 if (contains) continue;

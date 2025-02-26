@@ -6,9 +6,11 @@ namespace Game.UnitClasses
 {
     public class PlayerCharacter : Unit
     {
+        private const string Path = "Prefab/PlayerCharacter";
         #region Properties
         
         public static PlayerCharacter Instance { get; private set; }
+        protected override bool IsPlayer { get; set; } = true;
 
         #endregion
 
@@ -19,14 +21,7 @@ namespace Game.UnitClasses
             EventHandler.Main.PushEvent(this);
         }
         private void OnDisable() => Instance = Instance == this ? null : Instance;
-
-        public override void OnBegin(bool bFirstTime)
-        {
-            base.OnBegin(bFirstTime);
-            if (bFirstTime) { }
-        }
-        
-        public static GameObject CreatPlayerCharacter() => (GameObject)Resources.Load("Prefab/PlayerCharacter");
+        public static GameObject CreatPlayerCharacter() => (GameObject)Resources.Load(Path);
         public static GameObject CreatAndInstantiatePlayerCharacter() => Instantiate(CreatPlayerCharacter());
     }
 }

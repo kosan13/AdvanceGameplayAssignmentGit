@@ -20,21 +20,21 @@ namespace Game
         {
             ResetRegionID(); // Reset region ID 
             
-            (HashSet<Tile>, HashSet<Tile>) subregion = BlobDivisionMazeFloodFill(ResetTilesAndGetSeedTile(_tileMap));
+            (HashSet<Tile>, HashSet<Tile>) subregion = BlobDivisionMazeFloodFill(ResetTilesAndGetSeedTile(Tilemap));
             
             RecursiveFloodFillData recursiveFloodFillData = new (subregion, maxRoomSize);
             RecursiveBlobDivisionMazeFloodFill(recursiveFloodFillData);
 
-            List<Wall> walls = CreatWalls(_tileMap);
+            List<Wall> walls = CreatWalls(Tilemap);
             _wallList.AddRange(walls);
 
             HashSet<(Tile, Tile)>[] gWalls = new HashSet<(Tile, Tile)>[GetRegionID()];
             for (int index = 0; index < gWalls.Length; index++) gWalls[index] = new HashSet<(Tile, Tile)>();
             List<(Tile, Tile)> occupiedWalls = new ();
             
-            foreach (Tile tile in _tileMap.GetAllTiles())
+            foreach (Tile tile in Tilemap.GetAllTiles())
             {
-                (bool, List<Tile>) neighborsWideDifferentIds = _tileMap.HasNeighborsWideDifferentIds(tile, false);
+                (bool, List<Tile>) neighborsWideDifferentIds = Tilemap.HasNeighborsWideDifferentIds(tile, false);
                 foreach (Tile neighborTile in neighborsWideDifferentIds.Item2)
                 {
                     foreach (HashSet<(Tile, Tile)> wall in gWalls)
@@ -108,8 +108,8 @@ namespace Game
                 SetRegionIDOnTiles(recursiveItems);
             }
             
-            newRecursiveFloodFillData.Item1 = NewRecursiveBlobDivisionMazeFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item1);
-            newRecursiveFloodFillData.Item2 = NewRecursiveBlobDivisionMazeFloodFillData(_tileMap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item2);
+            newRecursiveFloodFillData.Item1 = NewRecursiveBlobDivisionMazeFloodFillData(Tilemap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item1);
+            newRecursiveFloodFillData.Item2 = NewRecursiveBlobDivisionMazeFloodFillData(Tilemap, recursiveFloodFillData, recursiveFloodFillData.RecursiveItems.Item2);
             
             if (recursiveItems.Item1 != null && recursiveItems.Item1.Count > minRoomSize) RecursiveBlobDivisionMazeFloodFill(newRecursiveFloodFillData.Item1);
             if (recursiveItems.Item2 != null && recursiveItems.Item2.Count > minRoomSize) RecursiveBlobDivisionMazeFloodFill(newRecursiveFloodFillData.Item2);
@@ -129,7 +129,7 @@ namespace Game
         
         private void CreatOuterWalls()
         {
-            foreach (Tile tile in _tileMap.GetTileMap)
+            foreach (Tile tile in Tilemap.GetTileMap)
             {
                 List<Vector3> vertices = new();
                 List<Vector2> uv = new();

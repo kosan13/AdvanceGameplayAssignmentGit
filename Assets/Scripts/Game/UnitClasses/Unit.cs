@@ -13,17 +13,19 @@ namespace Game.UnitClasses
     public class Unit : GameEventMeshHandlerBehaviour
     {
         private Tile _occupiedTile;
-        
+
+        #region Properties
+
         public int CurrentHealth { get; protected set; }
         public int CurrentMovement { get; protected set; }
         public int CurrentActionsPoints { get; protected set; }
-        protected int Initiative { get; private set; }
-        protected Tile HoverTile { get; private set; }
         
+        public Vector3 WorldPosition { get; private set; }
+        protected int Initiative { get; private set; }
         public Tile OccupiedTile
         {
             get => _occupiedTile;
-            private set
+            set
             {
                 if (value == null) { _occupiedTile = null; return; }
                 _occupiedTile?.SetIsOccupied(false);
@@ -32,13 +34,6 @@ namespace Game.UnitClasses
                 WorldPosition = value.GetWorldPosition;
             }
         }
-        protected Vector3 WorldPosition { get; private set; }
-        
-
-        
-        
-        #region Properties
-
         protected static HashSet<Tile> GetLevel => BlobDivisionMaze.Instance.Level;
         protected virtual bool IsPlayer { get; set; } = false;
         public static List<Unit> AllUnits = new();
@@ -68,8 +63,8 @@ namespace Game.UnitClasses
         public override void OnBegin(bool bFirstTime)
         {
             base.OnBegin(bFirstTime);
-            CurrentMovement = UnitScriptableObject.MaxMovement;
             CurrentHealth = UnitScriptableObject.MaxHealth;
+            CurrentMovement = UnitScriptableObject.MaxMovement;
             CurrentActionsPoints = UnitScriptableObject.MaxActionsPoints;
         
             if (bFirstTime)
