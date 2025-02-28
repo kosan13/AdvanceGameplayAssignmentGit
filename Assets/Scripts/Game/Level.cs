@@ -8,7 +8,7 @@ namespace Game
 {
     public class Level : MonoBehaviour
     {
-        public static Queue<Unit> TurnOrder;
+        public static Queue<Unit> TurnOrder = new ();
         private static GameObject PauseMenuGameObject => PauseMenu.Instance.gameObject;
         private void Update() { if (Input.GetKeyDown(KeyCode.Escape)) PauseMenuGameObject.SetActive(!PauseMenuGameObject.activeSelf); }
 
@@ -21,6 +21,7 @@ namespace Game
             Debug.Log(units);
             Unit.Sort(units, true);
             Debug.Log(units);
+            foreach (Unit unit in units) TurnOrder.Enqueue(unit);
         }
         public static Level AddLevel(GameObject gameObject) => gameObject.AddComponent<Level>();
         public static Level CreateLevelAndAddLevel(GameObject gameObject)

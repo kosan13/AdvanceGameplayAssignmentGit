@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Event.BaseEventClass;
 using Event.Events;
+using Newtonsoft.Json;
 using ScriptableObject;
 using TileSystem.Tile_Class;
 using UnityEngine;
@@ -37,14 +37,14 @@ namespace Game.UnitClasses
                 WorldPosition = value.GetWorldPosition;
             }
         }
-        protected static HashSet<Tile> GetLevel => BlobDivisionMaze.Instance.TileLevel;
-        protected virtual bool IsPlayer { get; set; } = false;
+        [JsonIgnore] protected static HashSet<Tile> GetLevel => BlobDivisionMaze.Instance.TileLevel;
+        public virtual bool IsPlayer { get; protected set; } = false;
         public static List<Unit> AllUnits = new();
-        public static List<Unit> Enemies => AllUnits.FindAll(IsEnemy);
-        public List<Unit> EnemiesInRange => Enemies.FindAll(e => Vector3.Distance(transform.position, e.transform.position) <= CurrentMovement);
-        public MeshFilter GetMeshFilter => MeshFilter;
-        public MeshRenderer GetMeshRenderer => MeshRenderer;
-        public MeshCollider GetMeshCollider => MeshCollider;
+        [JsonIgnore] public static List<Unit> Enemies => AllUnits.FindAll(IsEnemy);
+        [JsonIgnore] public List<Unit> EnemiesInRange => Enemies.FindAll(e => Vector3.Distance(transform.position, e.transform.position) <= CurrentMovement);
+        [JsonIgnore] public MeshFilter GetMeshFilter => MeshFilter;
+        [JsonIgnore] public MeshRenderer GetMeshRenderer => MeshRenderer;
+        [JsonIgnore] public MeshCollider GetMeshCollider => MeshCollider;
         
         protected int RollInitiative() => Initiative = RollADie(UnitScriptableObject.InitiativeDies);
         public Tile SetOccupiedTile(Tile tile) => OccupiedTile = tile;

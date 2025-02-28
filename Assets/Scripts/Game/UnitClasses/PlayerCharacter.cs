@@ -1,4 +1,5 @@
 using Event.Events;
+using Newtonsoft.Json;
 using UnityEngine;
 using EventHandler = Event.EventHandler;
 
@@ -9,14 +10,15 @@ namespace Game.UnitClasses
         private const string Path = "Prefab/PlayerCharacter";
         #region Properties
 
-        public static PlayerCharacter Instance { get; private set; }
-        protected override bool IsPlayer { get; set; } = true;
+        [JsonIgnore] public static PlayerCharacter Instance { get; private set; }
+        // protected override bool IsPlayer { get; set; } = true;
 
         #endregion
 
         private void Start()
         {
             Instance = this;
+            IsPlayer = true;
             RotationEvent.CreatRotationEvent();
             EventHandler.Main.PushEvent(this);
         }

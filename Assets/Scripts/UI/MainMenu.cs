@@ -21,6 +21,7 @@ namespace UI
         public void OnStartGame()
         {
             EventHandler.Main.RemoveEvent(this);
+            BlobDivisionMaze.LodeGameBole = false;
             SceneManager.LoadScene("Level", LoadSceneMode.Single);
         }
         public void OnLodeGame()

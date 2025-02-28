@@ -80,9 +80,8 @@ namespace Game
             Tilemap = SaveSystem.SaveSystem.SaveFileData.Tilemap;
             TileLevel = SaveSystem.SaveSystem.SaveFileData.Level;
             MeshFilter.mesh = SaveSystem.SaveSystem.SaveFileData.WorldMap;
-            PlayerCharacter.SetAndInstantiatePlayerCharacterInstance(SaveSystem.SaveSystem.SaveFileData.PlayerCharacter);
+            PlayerCharacter.SetAndInstantiatePlayerCharacterInstance((PlayerCharacter)SaveSystem.SaveSystem.SaveFileData.PlayerCharacter);
             PlayerCharacter.Instance.transform.position = PlayerCharacter.Instance.WorldPosition;
-            Instantiate(PlayerCharacter.Instance);
             Level.AddLevel(gameObject);
             Level.TurnOrder = SaveSystem.SaveSystem.SaveFileData.TurnOrder;
         }

@@ -19,7 +19,7 @@ namespace SaveSystem
     public static void SaveProgression(SaveFileData saveFileData)
     {
         if (SaveDataFileExists) File.Delete(SaveFilePath);
-        string j = JsonConvert.SerializeObject(saveFileData, Formatting.Indented);
+        string j = JsonConvert.SerializeObject(saveFileData, Formatting.Indented, new JsonSerializerSettings() {ReferenceLoopHandling = ReferenceLoopHandling.Ignore});
         File.WriteAllText(SaveFilePath, j);
     }
 

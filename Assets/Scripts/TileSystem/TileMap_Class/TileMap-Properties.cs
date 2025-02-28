@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using TileSystem.Tile_Class;
 using UnityEngine;
 
@@ -6,16 +7,16 @@ namespace TileSystem.TileMap_Class
     public sealed partial class TileMapClass
     {
         #region Properties
-        public Tile[,] GetTileMap => TileMap;
+        [JsonIgnore] public Tile[,] GetTileMap => TileMap;
 
-        public Vector2Int GetSize => Size;
-        public int GetSizeX => Size.x;
-        public int GetSizeY => Size.y;
+        [JsonIgnore] public Vector2Int GetSize => Size;
+        [JsonIgnore] public int GetSizeX => Size.x;
+        [JsonIgnore] public int GetSizeY => Size.y;
         
-        public float GetWallHeight => WallHeight;
+        [JsonIgnore] public float GetWallHeight => WallHeight;
         
-        public int GetLength => TileMap.Length;
-        public bool IsEmpty => TileMap.Length <= 0;
+        [JsonIgnore] public int GetLength => TileMap.Length;
+        [JsonIgnore] public bool IsEmpty => TileMap.Length <= 0;
         
         #endregion
     }
