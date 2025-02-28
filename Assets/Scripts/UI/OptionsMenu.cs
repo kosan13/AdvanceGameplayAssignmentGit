@@ -1,5 +1,5 @@
 using Event;
-using Events;
+using Event.BaseEventClass;
 
 namespace UI
 {

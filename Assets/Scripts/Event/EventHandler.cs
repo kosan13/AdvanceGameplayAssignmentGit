@@ -51,6 +51,7 @@ namespace Event
             // remove the event
             EventStack.Remove(evt);
         }
+        public static void RemoveAllEvent(EventHandler eventHandler) { foreach (IEvent iEvent in eventHandler.EventStack.ToArray()) eventHandler.RemoveEvent(iEvent); }
         
         private void UpdateEvents()
         {

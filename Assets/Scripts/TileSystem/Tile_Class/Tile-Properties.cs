@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Graphs;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace TileSystem.Tile_Class
     {
         #region Properties
 
-        public Vector3 GetWorldPosition => WorldPosition;
+        [NonSerialized] public Vector3 GetWorldPosition => WorldPosition;
         
         public Vector2Int GetIndexPositions => IndexPositions;
         public int GetIndexPositionsX => IndexPositions.x;

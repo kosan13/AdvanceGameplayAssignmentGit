@@ -261,7 +261,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2561927229592274504}
         m_TargetAssemblyTypeName: UI.MainMenu, Assembly-CSharp
-        m_MethodName: OnStartGame
+        m_MethodName: OnLodeGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -483,6 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b6ea3074b745759dd198293248ee4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lodeGameButton: {fileID: 1448542268438294233}
 --- !u!1 &6319846483084894578
 GameObject:
   m_ObjectHideFlags: 0

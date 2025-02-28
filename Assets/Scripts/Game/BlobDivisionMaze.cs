@@ -7,11 +7,9 @@ using MeshHandlers;
 using TileSystem.TileMap_Class;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Tilemaps;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
 using static Graphs.GraphAlgorithms;
-using Random = UnityEngine.Random;
 using Tile = TileSystem.Tile_Class.Tile;
 
 namespace Game
@@ -25,8 +23,7 @@ namespace Game
         [SerializeField] private Shader wallShader;
         [SerializeField] private Texture2D floorTexture;
 
-        [SerializeField] private Transform playerCharacter;
-
+        public static bool LodeGameBole { get; set; } = false;
         private CombineInstance _floor;
         private List<Wall> _wallList = new ();
         private List<CombineInstance> _combineInstances = new ();
@@ -50,7 +47,7 @@ namespace Game
                 }
             }
         }
-        public HashSet<Tile> Level { get; private set; }
+        public HashSet<Tile> TileLevel { get; private set; }
         public static BlobDivisionMaze Instance { get; private set; }
         
         #endregion
@@ -61,18 +58,33 @@ namespace Game
         private void OnDisable() => Instance = Instance == this ? null : Instance;
         protected void Start()
         {
+            if (LodeGameBole) LodeGame();
+            else StartGame();
+        }
+
+        private void StartGame()
+        {
             InitializedWorld();
             GenerateBlobDivisionMaze();
             _combineInstances.Add(_floor);
             foreach (Wall wall in _wallList) _combineInstances.Add(new CombineInstance { mesh = wall.Mesh});
-            Debug.Log(_combineInstances.Count);
             MeshFilter.mesh = CreateMesh(_combineInstances);
             AddMaterialToMeshes();
             
-            Level = LongestFloodFill();
-            Debug.Log(Level);
-            int randomIndex = Random.Range(0, Level.Count - 1);
-            PlayerCharacter.CreatAndInstantiatePlayerCharacter().transform.position = Level.ElementAt(randomIndex).GetWorldPosition;
+            TileLevel = LongestFloodFill();
+            Debug.Log(TileLevel.ToArray().Length);
+            Level.CreateLevelAndAddLevel(gameObject);
+        }
+        private void LodeGame()
+        {
+            Tilemap = SaveSystem.SaveSystem.SaveFileData.Tilemap;
+            TileLevel = SaveSystem.SaveSystem.SaveFileData.Level;
+            MeshFilter.mesh = SaveSystem.SaveSystem.SaveFileData.WorldMap;
+            PlayerCharacter.SetAndInstantiatePlayerCharacterInstance(SaveSystem.SaveSystem.SaveFileData.PlayerCharacter);
+            PlayerCharacter.Instance.transform.position = PlayerCharacter.Instance.WorldPosition;
+            Instantiate(PlayerCharacter.Instance);
+            Level.AddLevel(gameObject);
+            Level.TurnOrder = SaveSystem.SaveSystem.SaveFileData.TurnOrder;
         }
 
         private void InitializedWorld()

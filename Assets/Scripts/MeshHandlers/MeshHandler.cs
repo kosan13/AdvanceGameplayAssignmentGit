@@ -9,9 +9,9 @@ namespace MeshHandlers
     [RequireComponent(typeof(MeshCollider))]
     public abstract class MeshHandler : MonoBehaviour
     { 
-        protected MeshFilter MeshFilter { get; private set; }
-        protected MeshRenderer MeshRenderer { get; private set; }
-        protected MeshCollider MeshCollider { get; private set; }
+        public MeshFilter MeshFilter { get; private set; }
+        public MeshRenderer MeshRenderer { get; private set; }
+        public MeshCollider MeshCollider { get; private set; }
 
         private void OnValidate()
         {
