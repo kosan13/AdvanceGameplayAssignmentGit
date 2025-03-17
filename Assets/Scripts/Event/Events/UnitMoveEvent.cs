@@ -1,11 +1,12 @@
-using Enums;
 using Game;
 using Game.UnitClasses;
-using Graphs;
+using Librarys.Graphs.Enum;
+using Librarys.Graphs.Interfaces;
 using TileSystem.Tile_Class;
 using UI;
+using Unity.Mathematics;
 using UnityEngine;
-using static Enums.Direction;
+using static Librarys.Graphs.Enum.Direction;
 
 namespace Event.Events
 {
@@ -25,13 +26,13 @@ namespace Event.Events
             if (PauseMenu.Instance.gameObject.activeSelf) return;
             switch (_direction)
             {
-                case DirectionForward: Move(Unit, Unit.WorldPosition + Unit.transform.forward, _moveAmount); break;
-                case DirectionBack: Move(Unit, Unit.WorldPosition - Unit.transform.forward, _moveAmount); break;
-                case DirectionLeft: Move(Unit, Unit.WorldPosition - Unit.transform.right, _moveAmount); break;
-                case DirectionRight: Move(Unit, Unit.WorldPosition + Unit.transform.right, _moveAmount); break;
+                case Forward: Move(Unit, Unit.WorldPosition + Unit.transform.forward, _moveAmount); break;
+                case Back: Move(Unit, Unit.WorldPosition - Unit.transform.forward, _moveAmount); break;
+                case Left: Move(Unit, Unit.WorldPosition - Unit.transform.right, _moveAmount); break;
+                case Right: Move(Unit, Unit.WorldPosition + Unit.transform.right, _moveAmount); break;
                 case Null: 
-                case DirectionUp: 
-                case DirectionDown: 
+                case Up: 
+                case Down: 
                 default: Debug.Log("Not a valid Direction"); break;
             }
         }

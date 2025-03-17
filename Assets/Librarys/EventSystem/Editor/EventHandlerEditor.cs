@@ -1,8 +1,8 @@
-using Event;
+using Librarys.EventSystem.Interfaces;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor.Events
+namespace Librarys.EventSystem.Editor
 {
     [CustomEditor(typeof(EventHandler), true)]
     public class EventHandlerEditor : UnityEditor.Editor
@@ -18,12 +18,12 @@ namespace Editor.Events
             if (eventHandler is null) return;
             foreach (IEvent evt in eventHandler.EventStack)
             {
-                string name = "   #" + eventHandler.EventStack.IndexOf(evt) + ": " + evt;
+                string eventName = "   #" + eventHandler.EventStack.IndexOf(evt) + ": " + evt;
                 if (evt is Object obj)
                 {
-                    if (GUILayout.Button(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label)) Selection.activeObject = obj;
+                    if (GUILayout.Button(eventName, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label)) Selection.activeObject = obj;
                 }
-                else EditorGUILayout.LabelField(name, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label);
+                else EditorGUILayout.LabelField(eventName, evt == eventHandler.CurrentEvent ? EditorStyles.boldLabel : EditorStyles.label);
             }
             GUILayout.EndVertical();
         }

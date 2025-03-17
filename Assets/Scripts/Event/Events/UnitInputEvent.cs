@@ -1,4 +1,5 @@
-using Enums;
+using Librarys.EventSystem;
+using Librarys.Graphs.Enum;
 using UnityEngine;
 using Input = UnityEngine.Input;
 using Unit = Game.UnitClasses.Unit;
@@ -13,10 +14,10 @@ namespace Event.Events
         
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.W)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.DirectionForward));
-            if (Input.GetKeyDown(KeyCode.A)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.DirectionLeft));
-            if (Input.GetKeyDown(KeyCode.S)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.DirectionBack));
-            if (Input.GetKeyDown(KeyCode.D)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.DirectionRight));
+            if (Input.GetKeyDown(KeyCode.W)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.Forward));
+            if (Input.GetKeyDown(KeyCode.A)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.Left));
+            if (Input.GetKeyDown(KeyCode.S)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.Back));
+            if (Input.GetKeyDown(KeyCode.D)) EventHandler.Main.PushEvent(new UnitMoveEvent(Unit, Direction.Right));
         }
         
         public override bool IsDone() => _done;

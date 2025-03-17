@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using Librarys.EventSystem.Interfaces;
 using UnityEngine;
 
-namespace Event
+namespace Librarys.EventSystem
 {
     public class EventHandler : MonoBehaviour
     {
+        public bool DebugEventStack { get; private set; } = false;
+        
         private HashSet<IEvent> _startedEvents = new ();
         private static EventHandler _main;
 
@@ -18,16 +21,16 @@ namespace Event
             get
             {
                 if (_main != null || !Application.isPlaying) return _main;
-                GameObject go = new ("MainEventHandler");
-                DontDestroyOnLoad(go);
-                _main = go.AddComponent<EventHandler>();
+                GameObject gameObject = new ("MainEventHandler");
+                DontDestroyOnLoad(gameObject);
+                _main = gameObject.AddComponent<EventHandler>();
                 return _main;
             }
         }
 
         #endregion
         
-        private void Update() { UpdateEvents(); }
+        private void Update() => UpdateEvents();
         
         public void PushEvent(IEvent evt)
         {
@@ -66,7 +69,6 @@ namespace Event
                 bool bFirstTime = !_startedEvents.Contains(CurrentEvent);
                 _startedEvents.Add(CurrentEvent);
                 CurrentEvent.OnBegin(bFirstTime);
-
                 // did something affect the stack in the OnBegin()?
                 if (EventStack != null)
                 {
@@ -92,25 +94,31 @@ namespace Event
             _startedEvents.Remove(CurrentEvent);
             CurrentEvent = null;
         }
-
         private void OnGUI()
         {
             if (this != _main) return;
-
-            #if UNITY_EDITOR
+            if (DebugEventStack) DrawEventStack();
+            else
+            {
+                #if UNITY_EDITOR
+                    DrawEventStack();
+                #endif
+            }
+        }
+        private void DrawEventStack()
+        {
             const float lineHeight = 32.0f;
             GUI.color = new Color(0.0f, 0.0f, 0.0f, 0.7f);
-            Rect r = new Rect(0, 0, 250.0f, lineHeight * EventStack.Count);
+            Rect r = new (0, 0, 250.0f, lineHeight * EventStack.Count);
             GUI.DrawTexture(r, Texture2D.whiteTexture);
 
-            Rect line = new Rect(10, 0, r.width - 20, lineHeight);
+            Rect line = new (10, 0, r.width - 20, lineHeight);
             for (int i = 0; i < EventStack.Count; i++)
             {
                 GUI.color = EventStack[i] == CurrentEvent ? Color.green : Color.white;
-                GUI.Label(line, "#" + i + ": " + EventStack[i].ToString(), i == 0 ? UnityEditor.EditorStyles.boldLabel : UnityEditor.EditorStyles.label);
+                GUI.Label(line, "#" + i + ": " + EventStack[i], i == 0 ? UnityEditor.EditorStyles.boldLabel : UnityEditor.EditorStyles.label);
                 line.y += line.height;
             }
-            #endif
         }
     }
 }

@@ -1,5 +1,5 @@
-using Event.BaseEventClass;
 using Game.UnitClasses;
+using Librarys.EventSystem.BaseEventClass;
 
 namespace Event.Events
 {

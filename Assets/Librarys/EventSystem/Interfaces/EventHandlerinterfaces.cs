@@ -1,4 +1,4 @@
-namespace Event
+namespace Librarys.EventSystem.Interfaces
 {
     public interface IEvent
     {

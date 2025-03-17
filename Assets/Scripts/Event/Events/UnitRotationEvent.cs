@@ -1,6 +1,7 @@
-using Event.BaseEventClass;
 using Game;
 using Game.UnitClasses;
+using Librarys.EventSystem;
+using Librarys.EventSystem.BaseEventClass;
 using UnityEngine;
 
 namespace Event.Events

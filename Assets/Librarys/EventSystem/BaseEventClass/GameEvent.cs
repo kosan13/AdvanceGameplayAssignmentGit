@@ -1,8 +1,8 @@
-using MeshHandlers;
+using Librarys.EventSystem.Interfaces;
 
-namespace Event.BaseEventClass
+namespace Librarys.EventSystem.BaseEventClass
 {
-    public abstract class GameEventMeshHandlerBehaviour : MeshHandler, IEvent
+    public abstract class GameEvent : IEvent
     {
         public virtual void OnBegin(bool bFirstTime) { }
         public virtual void OnUpdate() { }
