@@ -8,7 +8,7 @@ namespace TileSystem.TileMap_Class
     {
         #region static
         
-        public static bool IsScannableTile(Tile_Class.Tile tile) => tile.GetCanBeScanned && !tile.GetIsOccupied;
+        public static bool IsScannableTile(Tile tile) => tile.GetCanBeScanned && !tile.GetIsOccupied;
         public static HashSet<Tile>[] AllRegion(TileMapClass tileMap ,int regionID)
         {
             HashSet<Tile>[] allRegion = new HashSet<Tile>[regionID];

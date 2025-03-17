@@ -1,6 +1,6 @@
 using Game;
 using UnityEditor;
-using static Editor.Graphs.EditorGraphUtils;
+using static Librarys.Graphs.Editor.EditorGraphUtils;
 
 namespace Editor.Game
 {

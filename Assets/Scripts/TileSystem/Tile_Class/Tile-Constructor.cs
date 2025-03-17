@@ -1,5 +1,7 @@
 using System.Collections.Generic;
-using Graphs;
+using Librarys.Graphs.Scripts;
+using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace TileSystem.Tile_Class

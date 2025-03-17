@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.UnitClasses;
-using Graphs;
-using MeshHandlers;
+using Librarys.Graphs.Interfaces;
+using Librarys.MeshHandlers.Scripts;
 using TileSystem.TileMap_Class;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
-using static Graphs.GraphAlgorithms;
+using static Librarys.Graphs.Scripts.GraphAlgorithms;
 using Tile = TileSystem.Tile_Class.Tile;
 
 namespace Game
@@ -53,9 +54,18 @@ namespace Game
         #endregion
         
         public float Heuristic(INode start, INode goal) => throw new NotImplementedException();
-        
-        private void OnEnable() => Instance = this;
-        private void OnDisable() => Instance = Instance == this ? null : Instance;
+
+        protected override void OnEnable()
+        {   
+            base.OnEnable();
+            Instance = this;
+        }
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Instance = Instance == this ? null : Instance;
+        }
+
         protected void Start()
         {
             if (LodeGameBole) LodeGame();

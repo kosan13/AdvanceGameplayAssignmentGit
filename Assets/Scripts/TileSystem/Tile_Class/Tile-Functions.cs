@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Graphs;
+using Librarys.Graphs.Scripts;
+using Unity.Collections;
 using UnityEngine;
 
 namespace TileSystem.Tile_Class
@@ -18,7 +19,6 @@ namespace TileSystem.Tile_Class
         
         public void SetMaterial(Material material) => Renderer.material = material;
         
-
         public bool IsSameTile(Tile tile) => this == tile;
         public bool IsSameRegionID(Tile tile) => tile.RegionID == RegionID;
     

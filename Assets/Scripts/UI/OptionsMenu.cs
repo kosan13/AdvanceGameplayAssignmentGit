@@ -1,5 +1,6 @@
 using Event;
-using Event.BaseEventClass;
+using Librarys.EventSystem;
+using Librarys.EventSystem.BaseEventClass;
 
 namespace UI
 {

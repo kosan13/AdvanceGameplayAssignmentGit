@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using Event.BaseEventClass;
 using Event.Events;
+using Librarys.EventSystem;
+using Librarys.EventSystem.BaseEventClass;
 using Newtonsoft.Json;
 using ScriptableObject;
 using TileSystem.Tile_Class;
 using UnityEngine;
-using static Dies.DiesFunction;
 using static SortingAlgorithms.SortingAlgorithms;
-using EventHandler = Event.EventHandler;
+using static Librarys.DiesSystem.Scripts.DiesFunction;
 using Random = UnityEngine.Random;
 
 namespace Game.UnitClasses
@@ -37,16 +37,16 @@ namespace Game.UnitClasses
                 WorldPosition = value.GetWorldPosition;
             }
         }
-        [JsonIgnore] protected static HashSet<Tile> GetLevel => BlobDivisionMaze.Instance.TileLevel;
+        protected static HashSet<Tile> GetLevel => BlobDivisionMaze.Instance.TileLevel;
         public virtual bool IsPlayer { get; protected set; } = false;
         public static List<Unit> AllUnits = new();
-        [JsonIgnore] public static List<Unit> Enemies => AllUnits.FindAll(IsEnemy);
-        [JsonIgnore] public List<Unit> EnemiesInRange => Enemies.FindAll(e => Vector3.Distance(transform.position, e.transform.position) <= CurrentMovement);
-        [JsonIgnore] public MeshFilter GetMeshFilter => MeshFilter;
-        [JsonIgnore] public MeshRenderer GetMeshRenderer => MeshRenderer;
-        [JsonIgnore] public MeshCollider GetMeshCollider => MeshCollider;
+        public static List<Unit> Enemies => AllUnits.FindAll(IsEnemy);
+        public List<Unit> EnemiesInRange => Enemies.FindAll(e => Vector3.Distance(transform.position, e.transform.position) <= CurrentMovement);
+        public MeshFilter GetMeshFilter => MeshFilter;
+        public MeshRenderer GetMeshRenderer => MeshRenderer;
+        public MeshCollider GetMeshCollider => MeshCollider;
         
-        protected int RollInitiative() => Initiative = RollADie(UnitScriptableObject.InitiativeDies);
+        protected int RollInitiative() => Initiative = RollDie(UnitScriptableObject.InitiativeDies);
         public Tile SetOccupiedTile(Tile tile) => OccupiedTile = tile;
 
         public int RemoveMovement(int value) => CurrentMovement - value;
@@ -54,8 +54,17 @@ namespace Game.UnitClasses
 
         #endregion
 
-        private void OnEnable() => AllUnits.Add(this);
-        private void OnDisable() => AllUnits.Remove(this);
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            AllUnits.Add(this);
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            AllUnits.Remove(this);
+        }
 
         public override void OnBegin(bool bFirstTime)
         {

@@ -1,10 +1,10 @@
-using Event.BaseEventClass;
 using Game;
 using Game.UnitClasses;
+using Librarys.EventSystem;
+using Librarys.EventSystem.BaseEventClass;
 using SaveSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using EventHandler = Event.EventHandler;
 
 namespace UI
 {

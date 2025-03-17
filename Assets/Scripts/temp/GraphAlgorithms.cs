@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Graphs;
+using Librarys.Graphs.Interfaces;
 using UnityEngine;
 
 namespace temp

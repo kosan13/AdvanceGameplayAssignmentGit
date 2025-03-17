@@ -1,7 +1,7 @@
 using Event.Events;
+using Librarys.EventSystem;
 using Newtonsoft.Json;
 using UnityEngine;
-using EventHandler = Event.EventHandler;
 
 namespace Game.UnitClasses
 {
@@ -10,7 +10,7 @@ namespace Game.UnitClasses
         private const string Path = "Prefab/PlayerCharacter";
         #region Properties
 
-        [JsonIgnore] public static PlayerCharacter Instance { get; private set; }
+        public static PlayerCharacter Instance { get; private set; }
         // protected override bool IsPlayer { get; set; } = true;
 
         #endregion
@@ -22,7 +22,13 @@ namespace Game.UnitClasses
             RotationEvent.CreatRotationEvent();
             EventHandler.Main.PushEvent(this);
         }
-        private void OnDisable() => Instance = Instance == this ? null : Instance;
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            Instance = Instance == this ? null : Instance;
+        }
+
         public static GameObject CreatPlayerCharacter() => (GameObject)Resources.Load(Path);
         public static GameObject CreatAndInstantiatePlayerCharacter() => Instantiate(CreatPlayerCharacter());
 

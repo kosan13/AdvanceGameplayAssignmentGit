@@ -1,6 +1,6 @@
-using Dies;
+using Librarys.DiesSystem.Scripts.Enum;
 using UnityEngine;
-using static Dies.DiesEnum;
+using static Librarys.DiesSystem.Scripts.Enum.DiesTypes;
 
 namespace ScriptableObject
 {
@@ -8,8 +8,8 @@ namespace ScriptableObject
     public class UnitScriptableObject : UnityEngine.ScriptableObject
     {
         public static int MaxHealth = 10;
-        public static  int MaxMovement = 5;
-        public static  int MaxActionsPoints = 2;
-        public static  DiesEnum InitiativeDies = D20;
+        public static int MaxMovement = 5;
+        public static int MaxActionsPoints = 2;
+        public const DiesTypes InitiativeDies = D20;
     }
 }

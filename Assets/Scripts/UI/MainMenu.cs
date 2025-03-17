@@ -1,6 +1,6 @@
-using Event;
-using Event.BaseEventClass;
 using Game;
+using Librarys.EventSystem;
+using Librarys.EventSystem.BaseEventClass;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static SaveSystem.SaveSystem;

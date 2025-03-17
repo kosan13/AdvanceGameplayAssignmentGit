@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Graphs;
+using Librarys.Graphs.Scripts;
 using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;

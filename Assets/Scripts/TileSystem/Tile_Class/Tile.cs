@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using Graphs;
+using Librarys.Graphs.Interfaces;
+using Librarys.Graphs.Scripts;
 using UnityEngine;
 
 namespace TileSystem.Tile_Class
@@ -12,7 +13,6 @@ namespace TileSystem.Tile_Class
         private int RegionID { get; set; }
         private bool IsOccupied { get; set; }
         private bool CanBeScanned { get; set; }
-        
         private Transform Visual { get; set; }
         private Renderer Renderer { get; set; }
     }
