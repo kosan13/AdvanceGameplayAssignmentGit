@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Graphs
+namespace Librarys.Graphs.Interfaces
 {
     public interface INode { IEnumerable<ILink> GetLinks { get; } }
     public interface IPositionNode : INode { Vector3 GetWorldPosition { get; } }

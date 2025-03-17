@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Librarys.Graphs.Interfaces;
 
-namespace Graphs
+namespace Librarys.Graphs.Scripts
 {
     public static class GraphAlgorithms
     {
@@ -10,13 +11,11 @@ namespace Graphs
             Queue<T> open = new();
             HashSet<T> closed = new();
             open.Enqueue(start);
-
             // search / iteration
             while (open.Count > 0) 
             {
                 T node = open.Dequeue();
                 closed.Add(node);
-
                 // search the neighbors
                 foreach (ILink link in node.GetLinks)
                 {
@@ -32,7 +31,6 @@ namespace Graphs
             Queue<T> open = new();
             HashSet<T> closed = new();
             open.Enqueue(start);
-
             for (int i = 0; i <= iRange; ++i)
             {
                 Queue<T> nextRipple = new();
@@ -40,7 +38,6 @@ namespace Graphs
                 {
                     T node = open.Dequeue();
                     closed.Add(node);
-
                     // search the neighbors
                     foreach (ILink link in node.GetLinks)
                     {
@@ -50,7 +47,6 @@ namespace Graphs
                 }
                 open = nextRipple;
             }
-
             // goodies in here
             return closed;
         }
