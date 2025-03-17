@@ -1,8 +1,6 @@
 using Game;
-using Game.UnitClasses;
 using Librarys.EventSystem;
 using Librarys.EventSystem.BaseEventClass;
-using SaveSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,7 +24,7 @@ namespace UI
         public void OnSave()
         {
             BlobDivisionMaze instance = BlobDivisionMaze.Instance;
-            SaveSystem.SaveSystem.SaveProgression(new SaveFileData(instance.Tilemap,instance.TileLevel, instance.MeshFilter.mesh,Level.TurnOrder, PlayerCharacter.Instance));
+            // SaveSystem.SaveSystem.SaveProgression(new SaveFileData(instance.Tilemap,instance.TileLevel, instance.MeshFilter.mesh,Level.TurnOrder, PlayerCharacter.Instance));
         }
         public void OnBack()
         {

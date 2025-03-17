@@ -22,7 +22,7 @@ namespace TileSystem.Tile_Class
         public Renderer GetRenderer => Renderer;
         public Material GetMaterial => Renderer.material;
         
-        public IEnumerable<ILink> GetLinks => Links;
+        public IEnumerable<ILink> GetLinks => Links as IEnumerable<ILink>;
         
         #endregion
     }

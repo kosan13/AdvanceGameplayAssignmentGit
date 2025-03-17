@@ -87,13 +87,13 @@ namespace Game
         }
         private void LodeGame()
         {
-            Tilemap = SaveSystem.SaveSystem.SaveFileData.Tilemap;
-            TileLevel = SaveSystem.SaveSystem.SaveFileData.Level;
-            MeshFilter.mesh = SaveSystem.SaveSystem.SaveFileData.WorldMap;
-            PlayerCharacter.SetAndInstantiatePlayerCharacterInstance((PlayerCharacter)SaveSystem.SaveSystem.SaveFileData.PlayerCharacter);
-            PlayerCharacter.Instance.transform.position = PlayerCharacter.Instance.WorldPosition;
-            Level.AddLevel(gameObject);
-            Level.TurnOrder = SaveSystem.SaveSystem.SaveFileData.TurnOrder;
+            // Tilemap = SaveSystem.SaveSystem.SaveFileData.Tilemap;
+            // TileLevel = SaveSystem.SaveSystem.SaveFileData.Level;
+            // MeshFilter.mesh = SaveSystem.SaveSystem.SaveFileData.WorldMap;
+            // PlayerCharacter.SetAndInstantiatePlayerCharacterInstance((PlayerCharacter)SaveSystem.SaveSystem.SaveFileData.PlayerCharacter);
+            // PlayerCharacter.Instance.transform.position = PlayerCharacter.Instance.WorldPosition;
+            // Level.AddLevel(gameObject);
+            // Level.TurnOrder = SaveSystem.SaveSystem.SaveFileData.TurnOrder;
         }
 
         private void InitializedWorld()

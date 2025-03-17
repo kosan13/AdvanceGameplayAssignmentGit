@@ -3,7 +3,6 @@ using Librarys.EventSystem;
 using Librarys.EventSystem.BaseEventClass;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static SaveSystem.SaveSystem;
 
 namespace UI
 {
@@ -12,7 +11,7 @@ namespace UI
         [SerializeField] private GameObject lodeGameButton;
         private void OnEnable()
         {
-            lodeGameButton.SetActive(SaveDataFileExists);
+            // lodeGameButton.SetActive(SaveDataFileExists);
             EventHandler.Main.PushEvent(this);
         }
 
@@ -26,7 +25,7 @@ namespace UI
         }
         public void OnLodeGame()
         {
-            LoadProgression();
+            // LoadProgression();
             BlobDivisionMaze.LodeGameBole = true;
             EventHandler.Main.RemoveEvent(this);
             SceneManager.LoadScene("Level", LoadSceneMode.Single);
