@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Librarys.Graphs.Scripts;
-using Unity.Collections;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace TileSystem.Tile_Class
@@ -110,8 +108,9 @@ namespace TileSystem.Tile_Class
             
             Renderer = Visual.GetComponent<Renderer>();
         }
-        public Tile()
+        public Tile(bool voidArea = false)
         {
+            VoidArea = voidArea;
             WorldPosition = new Vector3Int(0, 0, 0);
             IndexPositions = new Vector2Int(0, 0);
             Links = new List<Link>();

@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game.UnitClasses;
 using Librarys.Graphs.Interfaces;
 using Librarys.MeshHandlers.Scripts;
 using TileSystem.TileMap_Class;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static TileSystem.TileSystemFunctions;
@@ -74,12 +72,21 @@ namespace Game
 
         private void StartGame()
         {
+            DateTime start = DateTime.Now;
+            
             InitializedWorld();
             GenerateBlobDivisionMaze();
+            
+            Debug.Log( $"world calc is {DateTime.Now.Subtract(start).TotalSeconds}");
+            
+            start = DateTime.Now;
+            
             _combineInstances.Add(_floor);
             foreach (Wall wall in _wallList) _combineInstances.Add(new CombineInstance { mesh = wall.Mesh});
             MeshFilter.mesh = CreateMesh(_combineInstances);
             AddMaterialToMeshes();
+            
+            Debug.Log( $"mesh calc is {DateTime.Now.Subtract(start).TotalSeconds}");
             
             TileLevel = LongestFloodFill();
             Debug.Log(TileLevel.ToArray().Length);

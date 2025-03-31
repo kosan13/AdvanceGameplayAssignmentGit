@@ -15,5 +15,7 @@ namespace TileSystem.Tile_Class
         private bool CanBeScanned { get; set; }
         private Transform Visual { get; set; }
         private Renderer Renderer { get; set; }
+        
+        private bool VoidArea { get; set; }
     }
 }
