@@ -7,7 +7,6 @@ using TileSystem.Tile_Class;
 using TileSystem.TileMap_Class;
 using UnityEngine;
 using static Librarys.Graphs.Scripts.GraphAlgorithms;
-using static Librarys.LogFunction.Scripts.LogFunction;
 using static TileSystem.TileSystemFunctions;
 using static TileSystem.TileSystemStructs;
 
@@ -63,17 +62,24 @@ namespace Game
         
         private void StartGame()
         {
+            DateTime start = DateTime.Now;
             InitializedWorld();
+            GenerateMaze();
             
-            // GenerateBlobDivisionMaze();
+            double fTotalTime = DateTime.Now.Subtract(start).TotalSeconds;
+            Debug.Log( $"world calc is {fTotalTime}");
             
-            //Create WorldMesh
-            CreateWorldMesh();
+            // start = DateTime.Now;
+            // //Create WorldMesh
+            // CreateWorldMesh();
+            //
+            // fTotalTime = DateTime.Now.Subtract(start).TotalSeconds;
+            // Debug.Log( $"mesh calc is {fTotalTime}");
             
             //Get the Level
-            TileLevel = LongestFloodFill();
-            DebugLog(TileLevel.ToArray().Length, "Length of Level is");
-            Level.CreateLevelAndAddLevel(gameObject);
+            // TileLevel = LongestFloodFill();
+            // DebugLog(TileLevel.ToArray().Length, "Length of Level is");
+            // Level.CreateLevelAndAddLevel(gameObject);
         }
 
         private void LodeGame() => StartGame();
@@ -85,6 +91,8 @@ namespace Game
             CreateLinks(Tilemap);
             // Create Ground Mesh
             _floorMesh = GenerateFloorMesh();
+            // Create the CalcTileMap
+            GenerateNativeTileMapData();
         }
         private CombineInstance GenerateFloorMesh()
         {
